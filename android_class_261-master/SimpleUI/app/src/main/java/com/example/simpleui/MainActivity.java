@@ -6,12 +6,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText; // import class:  option+enter
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText inputText;
+    private CheckBox hideCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -24,16 +26,21 @@ public class MainActivity extends AppCompatActivity {
         inputText.setOnKeyListener(new View.OnKeyListener() {  //onkeylistener 是一個介面
             @Override   // 實作interface的method
             public boolean onKey(View v, int i, KeyEvent keyEvent) {
-                //先判斷是按下還是放開
-                if (keyEvent.getAction()==keyEvent.ACTION_DOWN){
+                //先判斷是按下還是放開 擇一送出就好
+                if (keyEvent.getAction() == keyEvent.ACTION_DOWN){
                     if (i == KeyEvent.KEYCODE_ENTER){
                         submit(null); //沒有用到所以填null
-                        return true;
+                        return true; // event terminate
                     }
                 }
-                return false;
+                return false; //才會讓event繼續傳下去
             }
         });
+
+
+        hideCheckBox = (CheckBox)findViewById(R.id.hideCheckBox);
+        hideCheckBox.setChecked(true);
+
     }
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
