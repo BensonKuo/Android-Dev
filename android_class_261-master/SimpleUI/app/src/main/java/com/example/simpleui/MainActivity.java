@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
 
         inputText = (EditText)findViewById(R.id.inputText);  // cast 成edittext 型別
-
+        // difficult part~
         inputText.setOnKeyListener(new View.OnKeyListener() {  //onkeylistener 是一個介面
             @Override   // 實作interface的method
             public boolean onKey(View v, int i, KeyEvent keyEvent) {
@@ -38,16 +38,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        hideCheckBox = (CheckBox)findViewById(R.id.hideCheckBox);
-        hideCheckBox.setChecked(true);
+        hideCheckBox = (CheckBox)findViewById(R.id.hideCheckBox); //取得實體
+        //hideCheckBox.setChecked(true); // 用來看有無拿到實體
 
     }
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
 
-
         String text = inputText.getText().toString();
-        Toast.makeText(this,text, Toast.LENGTH_LONG).show();
+
+        if (hideCheckBox.isChecked()){
+            text = "***";
+        }
+
+        Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // make toast!(little hints)
+
 
         inputText.setText("");
 
