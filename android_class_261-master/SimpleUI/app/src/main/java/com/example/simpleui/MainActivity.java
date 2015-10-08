@@ -4,13 +4,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText; // import class:  option+enter
 
 public class MainActivity extends AppCompatActivity {
 
+    private EditText inputText;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
+        super.onCreate(savedInstanceState); //呼叫繼承的oncreate()  super()的用法
         setContentView(R.layout.activity_main);
+        // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
+
+
+        inputText = (EditText)findViewById(R.id.inputText);  // cast 成edittext 型別
+        inputText.setText("aaa");
     }
 
     @Override
