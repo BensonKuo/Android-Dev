@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText; // import class:  option+enter
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,10 +18,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
 
-
         inputText = (EditText)findViewById(R.id.inputText);  // cast 成edittext 型別
-        inputText.setText("aaa");
     }
+
+    public void submit(View v){
+
+        String text = inputText.getText().toString();
+        Toast.makeText(this, text,Toast.LENGTH_LONG).show();
+        //inputText.setText("aaa");
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
