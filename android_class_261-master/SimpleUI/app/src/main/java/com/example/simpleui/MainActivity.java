@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void setHistory(){
-        String[] data = {"1","2","3","4","5","6","7","8","9","10"};
+        String[] data = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );// (context, item style, array_data)
         historyListView.setAdapter(adapter);
     }
@@ -89,14 +90,16 @@ public class MainActivity extends AppCompatActivity {
             text = "***";
         }
 
-        //Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
+        Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
         Utils.writeFile(this, "history.txt", text+ "\n" );
         // this 指的是 main activity 整個class 因為他繼承了context
-        String fileContent = Utils.readFile(this, "history.txt");
-        Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();  //用toast顯示
+
+        //String fileContent = Utils.readFile(this, "history.txt");
+        //Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();  //用toast顯示
 
         inputText.setText("");
+        setHistory();
 
     }
 
