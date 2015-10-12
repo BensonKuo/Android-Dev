@@ -1,5 +1,7 @@
 package com.example.simpleui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -14,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText inputText;
     private CheckBox hideCheckBox;
+    private SharedPreferences sp;  //只能讀取
+    private SharedPreferences.Editor editor ; //用來編輯
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -21,11 +25,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
 
+        sp = getSharedPreferences("setting", Context.MODE_PRIVATE); // 取得實體 取得偏好設定 音量、畫質...etc
+        editor = sp.edit(); // 修改偏好設定
+
         inputText = (EditText)findViewById(R.id.inputText);  // cast 成edittext 型別
         // difficult part~
         inputText.setOnKeyListener(new View.OnKeyListener() {  //onkeylistener 是一個介面
             @Override   // 實作interface的method
             public boolean onKey(View v, int i, KeyEvent keyEvent) {
+
+                String text = inputText.getText().toString();
+                editor.putString("inputText",text); //參數為(index,value)
+                editor.commit();
+
                 //先判斷是按下還是放開 擇一送出就好
                 if (keyEvent.getAction() == keyEvent.ACTION_DOWN){
                     if (i == KeyEvent.KEYCODE_ENTER){
