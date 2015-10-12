@@ -76,10 +76,13 @@ public class MainActivity extends AppCompatActivity {
             text = "***";
         }
 
-        Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // make toast!(little hints)
+        //Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
         Utils.writeFile(this, "history.txt", text+ "\n" );
         // this 指的是 main activity 整個class 因為他繼承了context
+        String fileContent = Utils.readFile(this, "history.txt");
+
+        Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();
 
         inputText.setText("");
 
