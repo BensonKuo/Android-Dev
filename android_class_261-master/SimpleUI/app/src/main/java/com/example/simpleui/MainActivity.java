@@ -8,17 +8,22 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText; // import class:  option+enter
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText inputText;
     private CheckBox hideCheckBox;
+
     private SharedPreferences sp;  //只能讀取
     private SharedPreferences.Editor editor ; //用來編輯
+
+    private ListView historyListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -61,11 +66,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        historyListView = (ListView)findViewById(R.id.historyListView);
+
         inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
         hideCheckBox.setChecked(sp.getBoolean("hideCheckBox",false));// 顯示有無勾選
 
+        setHistory();
 
-
+    }
+    private void setHistory(){
+        String[] data = {"1","2","3","4","5","6","7","8","9","10"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );// (context, item style, array_data)
+        historyListView.setAdapter(adapter);
     }
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
@@ -81,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
         Utils.writeFile(this, "history.txt", text+ "\n" );
         // this 指的是 main activity 整個class 因為他繼承了context
         String fileContent = Utils.readFile(this, "history.txt");
-
-        Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();  //用toast顯示
 
         inputText.setText("");
 
