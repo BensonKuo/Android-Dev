@@ -46,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 return false; //才會讓event繼續傳下去
+
             }
         });
 
-
         hideCheckBox = (CheckBox)findViewById(R.id.hideCheckBox); //取得實體
         //hideCheckBox.setChecked(true); // 用來看有無拿到實體
+
+        inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
+
+
 
     }
 
