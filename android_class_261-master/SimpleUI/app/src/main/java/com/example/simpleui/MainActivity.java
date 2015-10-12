@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText; // import class:  option+enter
 import android.widget.Toast;
 
@@ -52,8 +53,16 @@ public class MainActivity extends AppCompatActivity {
 
         hideCheckBox = (CheckBox)findViewById(R.id.hideCheckBox); //取得實體
         //hideCheckBox.setChecked(true); // 用來看有無拿到實體
+        hideCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                editor.putBoolean("hideCheckBox", isChecked);
+                editor.commit();
+            }
+        });
 
         inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
+        hideCheckBox.setChecked(sp.getBoolean("hideCheckBox",false));
 
 
 
