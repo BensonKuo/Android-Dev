@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText; // import class:  option+enter
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor ; //用來編輯
 
     private ListView historyListView;
+
+    private Spinner storeInfoSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -66,20 +69,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         historyListView = (ListView)findViewById(R.id.historyListView);
+        storeInfoSpinner = (Spinner)findViewById(R.id.storeInfoSpinner);
 
         inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
-        hideCheckBox.setChecked(sp.getBoolean("hideCheckBox",false));// 顯示有無勾選
+        hideCheckBox.setChecked(sp.getBoolean("hideCheckBox", false));// 顯示有無勾選
 
         setHistory();
+        setStoreInfo();
 
     }
+
     private void setHistory(){
         String[] data = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
-
+        // 用來把資料放進列表格式
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );// (context, item style, array_data)
         historyListView.setAdapter(adapter);
+    }
+    private void setStoreInfo(){
+        String[] data = getResources().getStringArray(R.array.storeInfo);
+        // getResources() 取得所有res
+        // getStringArray()
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, data);
+        storeInfoSpinner.setAdapter(adapter);
     }
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
