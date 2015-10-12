@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
-        hideCheckBox.setChecked(sp.getBoolean("hideCheckBox",false));
+        hideCheckBox.setChecked(sp.getBoolean("hideCheckBox",false));// 顯示有無勾選
 
 
 
@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // make toast!(little hints)
 
+        Utils.writeFile(this, "history.txt", text+ "\n" );
+        // this 指的是 main activity 整個class 因為他繼承了context
 
         inputText.setText("");
 
