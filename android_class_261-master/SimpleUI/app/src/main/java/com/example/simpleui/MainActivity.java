@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner storeInfoSpinner;
 
     private int  REQUEST_DRINK_MENU = 1;
+    String drinkMenuResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -126,6 +128,16 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("store_info", storeInfoString);// 傳送額外資訊
         startActivityForResult(intent, REQUEST_DRINK_MENU);
         //進行跳轉 ForResult()是因為等一下要跳回來 不然只需startActivity
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_DRINK_MENU) {
+            if(resultCode == RESULT_OK){
+                drinkMenuResult = data.getStringExtra("result");
+                Log.d("debug", drinkMenuResult);
+            }
+        }
     }
 
 

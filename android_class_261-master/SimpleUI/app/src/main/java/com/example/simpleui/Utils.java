@@ -12,8 +12,9 @@ import java.io.IOException;
  */
 public class Utils {
 
-    public static void writeFile(Context context, String fileName, String content){ //可寫在sd卡或是裝置記憶體（後者較安全）
-                                // context 用來寫進裝置記憶體 sd卡只要直接new file加上路徑就好
+    public static void writeFile(Context context, String fileName, String content){
+                //可寫在sd卡或是裝置記憶體（後者較安全）
+                // context 用來寫進裝置記憶體 sd卡只要直接new file加上路徑就好
         try {
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_APPEND);
             fos.write(content.getBytes());
