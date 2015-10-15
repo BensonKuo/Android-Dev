@@ -18,6 +18,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText inputText;
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );// (context, item style, array_data)
         historyListView.setAdapter(adapter);
     }
+
     private void setStoreInfo(){
         String[] data = getResources().getStringArray(R.array.storeInfo);
         // getResources() 取得所有res
@@ -102,22 +106,38 @@ public class MainActivity extends AppCompatActivity {
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
 
-        String text = inputText.getText().toString();
+        String text = inputText.getText().toString(); //取得輸入內容
 
         if (hideCheckBox.isChecked()){
             text = "***";
         }
+        // 寫入所有資訊
+        JSONObject object = new JSONObject();
+        try{
+            object.put("note", text);
+            object.put("store_info", (String)storeInfoSpinner.getSelectedItem());
+            object.put("menu", drinkMenuResult);
 
-        Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
+            text = object.toString(); // 把json obj轉成string
 
-        Utils.writeFile(this, "history.txt", text+ "\n" );
-        // this 指的是 main activity 整個class 因為他繼承了context
+            // 下列為以前的功能
+            Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
-        //String fileContent = Utils.readFile(this, "history.txt");
-        //Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();  //用toast顯示
+            Utils.writeFile(this, "history.txt", text+ "\n" ); // write file
+            // this 指的是 main activity 整個class 因為他繼承了context
 
-        inputText.setText("");
-        setHistory();
+            //String fileContent = Utils.readFile(this, "history.txt");
+            //Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();  //用toast顯示
+
+            inputText.setText("");
+            setHistory();
+
+
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+
+
 
     }
 
@@ -134,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_DRINK_MENU) {
             if(resultCode == RESULT_OK){
-                drinkMenuResult = data.getStringExtra("result");
+                drinkMenuResult = data.getStringExtra("result"); //儲存傳來的訂單資訊
                 Log.d("debug", drinkMenuResult);
             }
         }
