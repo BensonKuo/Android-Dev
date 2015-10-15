@@ -1,6 +1,7 @@
 package com.example.simpleui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView historyListView;
 
     private Spinner storeInfoSpinner;
+
+    private int  REQUEST_DRINK_MENU = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -114,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
         inputText.setText("");
         setHistory();
 
+    }
+
+    public void goToDrinkMenu(View view){
+        String storeInfoString = (String) storeInfoSpinner.getSelectedItem();
+        Intent intent = new Intent();  // Intent用來觸發頁面跳動或是通知
+        intent.setClass(this, DrinkMenuActivy.class);  //設定頁面跳轉的起點和終點
+        intent.putExtra("store_info", storeInfoString);// 傳送額外資訊
+        startActivityForResult(intent, REQUEST_DRINK_MENU);
+        //進行跳轉 ForResult()是因為等一下要跳回來 不然只需startActivity
     }
 
 
