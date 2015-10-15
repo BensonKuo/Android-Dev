@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Beverage Menu"
-        android:id="@+id/textView2"
+        android:id="@+id/storeInfo"
         android:layout_gravity="center_horizontal" />
 
     <LinearLayout
@@ -35,14 +35,16 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/button2"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="add" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
+            android:text="0"
             android:id="@+id/button3"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="add" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,21 +57,24 @@
             android:layout_height="wrap_content"
             android:text="Tea"
             android:id="@+id/textView3"
-            android:layout_weight="1" />
+            android:layout_weight="1.8"
+            android:onClick="add" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
             android:id="@+id/button4"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="add" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
+            android:text="0"
             android:id="@+id/button5"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="add" />
     </LinearLayout>
 
     <LinearLayout
