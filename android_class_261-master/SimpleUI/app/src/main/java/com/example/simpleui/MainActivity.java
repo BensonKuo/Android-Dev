@@ -15,12 +15,18 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText; // import class:  option+enter
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -90,11 +96,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setHistory(){
-        String[] data = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
+        String[] rawData = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
+
+        // 列表型式資料list map是把三樣資料包起來的型式<key ,value>的型態
+        //前面是interface, ArrayList是有實作list的class,這樣寫彈性較高
+        List<Map<String,String>> data = new ArrayList<>();
+
+        /* 掃過整個data找出會用到的職 */
+        for(int i=0; i<rawData.length; i++) {
+
+            try {
+                JSONObject obj = new JSONObject(rawData[i]);
+                //取出需要的項目
+                String note = obj.getString("note");
+                String store_info = obj.getString("store_info");
+                JSONArray menu = obj.getJSONArray("menu");
+
+                //前面是interface, HashMap是有實作Map的class,這樣寫彈性較高
+                //<s,s>說明存放的key value型態，在這裏都是string
+                Map<String, String> item = new HashMap<>();
+                item.put("note", note);
+                item.put("store_info", store_info);
+                item.put("drink_number", getDrinkNumber(menu));
+                // item.get("note")會獲得note值
+                // 加回list
+                data.add(item);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+
+        String[] from = {"note","store_info","menu"};
+        int[] to = new int[]{R.id.note, R.id.store_info, R.id.drink_number};
+
+        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.listview_item, from, to);
         // 用來把資料放進列表格式
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );
+        // ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );
         // (context, item style, array_data)
-        historyListView.setAdapter(adapter);
+        historyListView.setAdapter(adapter);//真正做出來呈現
+    }
+
+    private String getDrinkNumber(JSONArray menu){
+        return "13";
     }
 
     private void setStoreInfo(){
