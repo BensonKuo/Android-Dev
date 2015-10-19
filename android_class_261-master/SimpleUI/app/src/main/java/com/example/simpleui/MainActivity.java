@@ -20,7 +20,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState); //呼叫繼承的oncreate()  super()的用法
         setContentView(R.layout.activity_main);
         // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
-
-
-
 
 
         sp = getSharedPreferences("settings", MODE_PRIVATE);
@@ -103,17 +102,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setHistory(){
-        String[] rawData = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
+
+        // 下query specify class(table name)
+        ParseQuery<ParseObject> query = new ParseQuery<>("Order");
+        //row = Parse object
+        List<ParseObject> rawData = null;
+        //query.whereEqualTo()
+        try{
+            rawData = query.find();// find()會造成UI lag
+            // find return value type is List, alike Array.
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        //String[] rawData = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
 
         // 列表型式資料list map是把三樣資料包起來的型式<key ,value>的型態
         //前面是interface, ArrayList是有實作list的class,這樣寫彈性較高
         List<Map<String,String>> data = new ArrayList<>();
 
         /* 掃過整個data找出會用到的職 */
-        for(int i=0; i<rawData.length; i++) {
-
-            try {
-                JSONObject obj = new JSONObject(rawData[i]);
+        for(int i=0; i<rawData.size(); i++) {
+                //JSONObject obj = new JSONObject(rawData[i]);
+                ParseObject obj = rawData.get(i);
                 //取出需要的項目
                 String note = obj.getString("note");
                 String store_info = obj.getString("store_info");
@@ -130,12 +141,10 @@ public class MainActivity extends AppCompatActivity {
                 // 加回list
                 data.add(item);
 
-            }catch (JSONException e){
-                e.printStackTrace();
-            }
+
         }
         // Mapping  Map key  with View.id for layout.
-        String[] from = {"note","store_info","menu"};
+        String[] from = {"note","store_info","drink_number"};
         int[] to = new int[]{R.id.note, R.id.store_info, R.id.drink_number};
 
         SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.listview_item, from, to);
@@ -176,12 +185,12 @@ public class MainActivity extends AppCompatActivity {
             object.put("menu", new JSONArray(drinkMenuResult));
 
             // text = object.toString(); // 把json obj轉成string
-
+            // next more detail on parse
             ParseObject orderObject = new ParseObject("Order");
             orderObject.put("note", text);
             orderObject.put("store_info", (String)storeInfoSpinner.getSelectedItem());
             orderObject.put("menu", new JSONArray(drinkMenuResult));
-            orderObject.saveInBackground();
+            orderObject.saveInBackground(); //在背景執行的 用save callback呼叫確認是否成功
 
             Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
@@ -223,25 +232,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
