@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
     private void setHistory(){
         String[] data = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
         // 用來把資料放進列表格式
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );// (context, item style, array_data)
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data );
+        // (context, item style, array_data)
         historyListView.setAdapter(adapter);
     }
 
