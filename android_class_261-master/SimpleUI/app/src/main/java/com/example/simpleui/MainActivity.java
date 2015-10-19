@@ -19,6 +19,9 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +52,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
 
-        sp = getSharedPreferences("setting", Context.MODE_PRIVATE); // 取得實體 取得偏好設定 音量、畫質...etc
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "R1iEoTLPPHzpxF4OuLKZQcy5OVEonqBqMUad4zaS", "770fv893TsEb8rBYft7vWZ9aNXETrkBrVH82iRyD");
+
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
+
+        sp = getSharedPreferences("settings", MODE_PRIVATE);
         editor = sp.edit(); // 修改偏好設定
 
         inputText = (EditText)findViewById(R.id.inputText);  // cast 成edittext 型別
@@ -119,13 +130,15 @@ public class MainActivity extends AppCompatActivity {
                 item.put("store_info", store_info);
                 item.put("drink_number", getDrinkNumber(menu));
                 // item.get("note")會獲得note值
+
                 // 加回list
                 data.add(item);
+
             }catch (JSONException e){
                 e.printStackTrace();
             }
         }
-
+        // Mapping  Map key  with View.id for layout.
         String[] from = {"note","store_info","menu"};
         int[] to = new int[]{R.id.note, R.id.store_info, R.id.drink_number};
 
