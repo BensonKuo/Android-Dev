@@ -52,13 +52,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // 做出主要畫面 參照activity_main.xml來做  R.layout是參照位置
 
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "R1iEoTLPPHzpxF4OuLKZQcy5OVEonqBqMUad4zaS", "770fv893TsEb8rBYft7vWZ9aNXETrkBrVH82iRyD");
 
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+
+
 
         sp = getSharedPreferences("settings", MODE_PRIVATE);
         editor = sp.edit(); // 修改偏好設定
@@ -176,16 +172,20 @@ public class MainActivity extends AppCompatActivity {
             object.put("store_info", (String)storeInfoSpinner.getSelectedItem());
             // both key and value are string
             //     object.put("menu", drinkMenuResult);
-
             // let value be JSONArray
             object.put("menu", new JSONArray(drinkMenuResult));
 
-            text = object.toString(); // 把json obj轉成string
+            // text = object.toString(); // 把json obj轉成string
 
-            // 下列為以前的功能
+            ParseObject orderObject = new ParseObject("Order");
+            orderObject.put("note", text);
+            orderObject.put("store_info", (String)storeInfoSpinner.getSelectedItem());
+            orderObject.put("menu", new JSONArray(drinkMenuResult));
+            orderObject.saveInBackground();
+
             Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
-            Utils.writeFile(this, "history.txt", text+ "\n" ); // write file
+            Utils.writeFile(this, "history.txt", object+ "\n" ); // write file
             // this 指的是 main activity 整個class 因為他繼承了context
 
             //String fileContent = Utils.readFile(this, "history.txt");
