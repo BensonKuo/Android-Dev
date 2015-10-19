@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -116,7 +117,11 @@ public class MainActivity extends AppCompatActivity {
         try{
             object.put("note", text);
             object.put("store_info", (String)storeInfoSpinner.getSelectedItem());
-            object.put("menu", drinkMenuResult);
+            // both key and value are string
+            //     object.put("menu", drinkMenuResult);
+
+            // let value be JSONArray
+            object.put("menu", new JSONArray(drinkMenuResult));
 
             text = object.toString(); // 把json obj轉成string
 
