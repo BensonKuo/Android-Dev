@@ -1,7 +1,10 @@
 package com.example.simpleui;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -47,5 +50,20 @@ public class Utils {
         }
         // initialization bug fixed
         return " ";
+    }
+
+
+    public static Uri getPhotoUri(){
+        // 因為檔案較大所以會存sd card, 不會存app裝置資料夾
+        // sd/Pictures folder
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
+        if (dir.exists() == false){
+            dir.mkdirs();
+        }
+
+        File file = new File(dir, "simpleui_photo.png");
+        return Uri.fromFile(file);  // 回傳檔案路徑
+
     }
 }

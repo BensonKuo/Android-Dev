@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -298,8 +300,9 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_TAKE_PHOTO) { // setresult() finish()系統都自動完成了
             if (resultCode == RESULT_OK) {  // 使用者按返回或是x都會是RESULT_CANCEL
-                Bitmap bm = data.getParcelableExtra("data");
-                photoImageView.setImageBitmap(bm);
+                Uri uri = Utils.getPhotoUri();
+                // 顯示縮圖
+                photoImageView.setImageURI(uri);
             }
         }
     }
@@ -313,16 +316,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
-
         if (id == R.id.action_take_photo) {
-            Intent intent = new Intent();
-            // setAction() 呼叫動作相關的方法
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+            goToCamera();
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToCamera() {
+        Intent intent = new Intent();
+
+        // setAction() 呼叫動作相關的方法
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // 跟camera activity說拍成功的照片要存的路徑 有才會存
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Utils.getPhotoUri());
+
+        startActivityForResult(intent, REQUEST_TAKE_PHOTO);
     }
 }
