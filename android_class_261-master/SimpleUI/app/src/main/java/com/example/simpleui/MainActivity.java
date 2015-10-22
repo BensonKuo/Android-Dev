@@ -1,5 +1,6 @@
 package com.example.simpleui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText; // import class:  option+enter
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int  REQUEST_DRINK_MENU = 1;
     String drinkMenuResult;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -100,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
         setHistory();
         setStoreInfo();
+
+        //實體化
+        progressDialog = new ProgressDialog(this);
 
     }
 
@@ -208,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
 
+        progressDialog.setTitle("Loading...");
+        progressDialog.show();
+
         String text = inputText.getText().toString(); //取得輸入內容
 
         if (hideCheckBox.isChecked()){
@@ -235,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void done(ParseException e) {
                     Log.d("debug", "[line: 218] done");
+                    progressDialog.dismiss();
+
                     setHistory();
                     // 儲存成功後才顯示toast this refers to SaveCallback, so needs to specify
                     Toast.makeText(MainActivity.this, "Saved!", Toast.LENGTH_LONG).show();  // to make toast!(little hints)
