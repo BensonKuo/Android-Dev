@@ -180,12 +180,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setStoreInfo(){
-        String[] data = getResources().getStringArray(R.array.storeInfo);
+
+        ParseQuery<ParseObject> query = new ParseQuery<>("StoreInfo");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                Log.d("debug", "size:" + objects.size());
+
+                String[] data = new String[objects.size()];
+
+                for (int i=0; i<objects.size(); i++){
+                    ParseObject obj = objects.get(i);
+                    data[i] = obj.getString("name") +", " + obj.getString("address");
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, data);
+                storeInfoSpinner.setAdapter(adapter);
+            }
+        });
+        // String[] data = getResources().getStringArray(R.array.storeInfo);
         // getResources() 取得所有res
         // getStringArray()
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, data);
-        storeInfoSpinner.setAdapter(adapter);
     }
 
     public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
