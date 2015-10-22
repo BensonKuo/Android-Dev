@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                     // 傳出query結果的obj
                     // 負責做出listview
                     orderObjectToListView(objects);
-
                 }
             }
         });
@@ -204,23 +203,29 @@ public class MainActivity extends AppCompatActivity {
             // both key and value are string
             //     object.put("menu", drinkMenuResult);
             // let value be JSONArray
-            object.put("menu", new JSONArray(drinkMenuResult));
+            // object.put("menu", new JSONArray(drinkMenuResult));
 
             // text = object.toString(); // 把json obj轉成string
             // next more detail on parse
             ParseObject orderObject = new ParseObject("Order");
             orderObject.put("note", text);
             orderObject.put("store_info", (String)storeInfoSpinner.getSelectedItem());
-            orderObject.put("menu", new JSONArray(drinkMenuResult));
+            if (drinkMenuResult != null){
+                orderObject.put("menu", new JSONArray(drinkMenuResult));
+            }
             orderObject.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
                     Log.d("debug", "[line: 218] done");
+                    setHistory();
+                    // 儲存成功後才顯示toast this refers to SaveCallback, so needs to specify
+                    Toast.makeText(MainActivity.this, "Saved!", Toast.LENGTH_LONG).show();  // to make toast!(little hints)
+
                 }
             }); //在背景執行的 用save callback呼叫確認是否成功
+
             Log.d("debug", "line_221"); //這行可能比上一行早出現
 
-            Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
             Utils.writeFile(this, "history.txt", object+ "\n" ); // write file
             // this 指的是 main activity 整個class 因為他繼承了context
@@ -229,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
             //Toast.makeText(this, fileContent, Toast.LENGTH_LONG).show();  //用toast顯示
 
             inputText.setText("");
-            setHistory();
 
 
         }catch(JSONException e){
