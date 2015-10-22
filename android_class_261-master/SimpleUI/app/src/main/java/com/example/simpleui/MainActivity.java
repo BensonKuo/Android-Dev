@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
                     // 傳出query結果的obj
                     // 負責做出listview
                     orderObjectToListView(objects);
+                    historyListView.setVisibility(View.VISIBLE);
+                    findViewById(R.id.progressBar).setVisibility(View.GONE);
                 }
             }
         });
