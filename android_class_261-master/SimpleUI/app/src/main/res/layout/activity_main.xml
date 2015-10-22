@@ -13,10 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/inputText"
-        android:layout_marginTop="32dp"
         android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignRight="@+id/button"
+        android:layout_alignEnd="@+id/button" />
 
     <Button
         android:layout_width="wrap_content"
@@ -51,7 +50,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/storeInfoSpinner"
-        android:layout_below="@+id/button" />
+        android:layout_below="@+id/hideCheckBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/button8"
+        android:layout_toStartOf="@+id/button8"
+        android:layout_alignBottom="@+id/button8" />
 
     <Button
         android:layout_width="wrap_content"
@@ -59,7 +63,7 @@
         android:text="Menu"
         android:id="@+id/button8"
         android:onClick="goToDrinkMenu"
-        android:layout_alignTop="@+id/hideCheckBox"
+        android:layout_below="@+id/hideCheckBox"
         android:layout_toLeftOf="@+id/button"
         android:layout_toStartOf="@+id/button" />
 
@@ -72,5 +76,14 @@
         android:layout_alignEnd="@+id/button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/photo"
+        android:src="@mipmap/ic_launcher"
+        android:layout_below="@+id/button"
+        android:layout_alignRight="@+id/button"
+        android:layout_alignEnd="@+id/button" />
 
 </RelativeLayout>

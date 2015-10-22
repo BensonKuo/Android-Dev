@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText; // import class:  option+enter
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -44,11 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox hideCheckBox;
 
     private SharedPreferences sp;  //只能讀取
-    private SharedPreferences.Editor editor ; //用來編輯
+    private SharedPreferences.Editor editor; //用來編輯
 
     private ListView historyListView;
 
     private Spinner storeInfoSpinner;
+
+    private ImageView photoImageView;
 
     private int REQUEST_DRINK_MENU = 1;
     private int REQUEST_TAKE_PHOTO = 2;
@@ -66,19 +70,19 @@ public class MainActivity extends AppCompatActivity {
         sp = getSharedPreferences("settings", MODE_PRIVATE);
         editor = sp.edit(); // 修改偏好設定
 
-        inputText = (EditText)findViewById(R.id.inputText);  // cast 成edittext 型別
+        inputText = (EditText) findViewById(R.id.inputText);  // cast 成edittext 型別
         // difficult part~
         inputText.setOnKeyListener(new View.OnKeyListener() {  //onkeylistener 是一個介面
             @Override   // 實作interface的method
             public boolean onKey(View v, int i, KeyEvent keyEvent) {
 
                 String text = inputText.getText().toString();
-                editor.putString("inputText",text); //參數為(index,value)
+                editor.putString("inputText", text); //參數為(index,value)
                 editor.commit();
 
                 //先判斷是按下還是放開 擇一送出就好
-                if (keyEvent.getAction() == keyEvent.ACTION_DOWN){
-                    if (i == KeyEvent.KEYCODE_ENTER){
+                if (keyEvent.getAction() == keyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_ENTER) {
                         submit(null); //沒有用到所以填null
                         return true; // event terminate
                     }
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        hideCheckBox = (CheckBox)findViewById(R.id.hideCheckBox); //取得實體
+        hideCheckBox = (CheckBox) findViewById(R.id.hideCheckBox); //取得實體
         //hideCheckBox.setChecked(true); // 用來看有無拿到實體
         hideCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -98,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        historyListView = (ListView)findViewById(R.id.historyListView);
-        storeInfoSpinner = (Spinner)findViewById(R.id.storeInfoSpinner);
+        historyListView = (ListView) findViewById(R.id.historyListView);
+        storeInfoSpinner = (Spinner) findViewById(R.id.storeInfoSpinner);
 
         inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
         hideCheckBox.setChecked(sp.getBoolean("hideCheckBox", false));// 顯示有無勾選
@@ -110,9 +114,10 @@ public class MainActivity extends AppCompatActivity {
         //實體化
         progressDialog = new ProgressDialog(this);
 
+        photoImageView = (ImageView) findViewById(R.id.photo);
     }
 
-    private void setHistory(){
+    private void setHistory() {
 
         // 下query specify class(table name)
         ParseQuery<ParseObject> query = new ParseQuery<>("Order");
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null){
+                if (e == null) {
                     // 傳出query結果的obj
                     // 負責做出listview
                     orderObjectToListView(objects);
@@ -151,32 +156,32 @@ public class MainActivity extends AppCompatActivity {
     private void orderObjectToListView(List<ParseObject> rawData) {
         // 列表型式資料list map是把三樣資料包起來的型式<key ,value>的型態
         //前面是interface, ArrayList是有實作list的class,這樣寫彈性較高
-        List<Map<String,String>> data = new ArrayList<>();
+        List<Map<String, String>> data = new ArrayList<>();
 
         /* 掃過整個data找出會用到的職 */
-        for(int i=0; i<rawData.size(); i++) {
-                //JSONObject obj = new JSONObject(rawData[i]);
-                ParseObject obj = rawData.get(i);
-                //取出需要的項目
-                String note = obj.getString("note");
-                String store_info = obj.getString("store_info");
-                JSONArray menu = obj.getJSONArray("menu");
+        for (int i = 0; i < rawData.size(); i++) {
+            //JSONObject obj = new JSONObject(rawData[i]);
+            ParseObject obj = rawData.get(i);
+            //取出需要的項目
+            String note = obj.getString("note");
+            String store_info = obj.getString("store_info");
+            JSONArray menu = obj.getJSONArray("menu");
 
-                //前面是interface, HashMap是有實作Map的class,這樣寫彈性較高
-                //<s,s>說明存放的key value型態，在這裏都是string
-                Map<String, String> item = new HashMap<>();
-                item.put("note", note);
-                item.put("store_info", store_info);
-                item.put("drink_number", getDrinkNumber(menu));
-                // item.get("note")會獲得note值
+            //前面是interface, HashMap是有實作Map的class,這樣寫彈性較高
+            //<s,s>說明存放的key value型態，在這裏都是string
+            Map<String, String> item = new HashMap<>();
+            item.put("note", note);
+            item.put("store_info", store_info);
+            item.put("drink_number", getDrinkNumber(menu));
+            // item.get("note")會獲得note值
 
-                // 加回list
-                data.add(item);
+            // 加回list
+            data.add(item);
 
 
         }
         // Mapping  Map key  with View.id for layout.
-        String[] from = {"note","store_info","drink_number"};
+        String[] from = {"note", "store_info", "drink_number"};
         int[] to = new int[]{R.id.note, R.id.store_info, R.id.drink_number};
 
         SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.listview_item, from, to);
@@ -186,11 +191,11 @@ public class MainActivity extends AppCompatActivity {
         historyListView.setAdapter(adapter);//真正做出來呈現
     }
 
-    private String getDrinkNumber(JSONArray menu){
+    private String getDrinkNumber(JSONArray menu) {
         return "13";
     }
 
-    private void setStoreInfo(){
+    private void setStoreInfo() {
 
         ParseQuery<ParseObject> query = new ParseQuery<>("StoreInfo");
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -201,9 +206,9 @@ public class MainActivity extends AppCompatActivity {
 
                 String[] data = new String[objects.size()];
 
-                for (int i=0; i<objects.size(); i++){
+                for (int i = 0; i < objects.size(); i++) {
                     ParseObject obj = objects.get(i);
-                    data[i] = obj.getString("name") +", " + obj.getString("address");
+                    data[i] = obj.getString("name") + ", " + obj.getString("address");
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, data);
                 storeInfoSpinner.setAdapter(adapter);
@@ -215,21 +220,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void submit(View v){ //view 參數可用來判斷是哪個button被案到了
+    public void submit(View v) { //view 參數可用來判斷是哪個button被案到了
 
         progressDialog.setTitle("Loading...");
         progressDialog.show();
 
         String text = inputText.getText().toString(); //取得輸入內容
 
-        if (hideCheckBox.isChecked()){
+        if (hideCheckBox.isChecked()) {
             text = "***";
         }
         // 寫入所有資訊
         JSONObject object = new JSONObject();
-        try{
+        try {
             object.put("note", text);
-            object.put("store_info", (String)storeInfoSpinner.getSelectedItem());
+            object.put("store_info", (String) storeInfoSpinner.getSelectedItem());
             // both key and value are string
             //     object.put("menu", drinkMenuResult);
             // let value be JSONArray
@@ -239,8 +244,8 @@ public class MainActivity extends AppCompatActivity {
             // next more detail on parse
             ParseObject orderObject = new ParseObject("Order");
             orderObject.put("note", text);
-            orderObject.put("store_info", (String)storeInfoSpinner.getSelectedItem());
-            if (drinkMenuResult != null){
+            orderObject.put("store_info", (String) storeInfoSpinner.getSelectedItem());
+            if (drinkMenuResult != null) {
                 orderObject.put("menu", new JSONArray(drinkMenuResult));
             }
             orderObject.saveInBackground(new SaveCallback() {
@@ -259,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("debug", "line_221"); //這行可能比上一行早出現
 
 
-            Utils.writeFile(this, "history.txt", object+ "\n" ); // write file
+            Utils.writeFile(this, "history.txt", object + "\n"); // write file
             // this 指的是 main activity 整個class 因為他繼承了context
 
             //String fileContent = Utils.readFile(this, "history.txt");
@@ -268,15 +273,14 @@ public class MainActivity extends AppCompatActivity {
             inputText.setText("");
 
 
-        }catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-
     }
 
-    public void goToDrinkMenu(View view){
+    public void goToDrinkMenu(View view) {
         String storeInfoString = (String) storeInfoSpinner.getSelectedItem();
         Intent intent = new Intent();  // Intent用來觸發頁面跳動或是通知
         intent.setClass(this, DrinkMenuActivy.class);  //設定頁面跳轉的起點和終點
@@ -287,10 +291,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_DRINK_MENU) {
-            if(resultCode == RESULT_OK){
+        if (requestCode == REQUEST_DRINK_MENU) {
+            if (resultCode == RESULT_OK) {
                 drinkMenuResult = data.getStringExtra("result"); //儲存傳來的訂單資訊
                 Log.d("debug", drinkMenuResult);
+            }
+        } else if (requestCode == REQUEST_TAKE_PHOTO) { // setresult() finish()系統都自動完成了
+            if (resultCode == RESULT_OK) {  // 使用者按返回或是x都會是RESULT_CANCEL
+                Bitmap bm = data.getParcelableExtra("data");
+                photoImageView.setImageBitmap(bm);
             }
         }
     }
@@ -303,11 +312,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public  boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_take_photo){
+        if (id == R.id.action_take_photo) {
             Intent intent = new Intent();
             // setAction() 呼叫動作相關的方法
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
