@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Spinner storeInfoSpinner;
 
-    private int  REQUEST_DRINK_MENU = 1;
+    private int REQUEST_DRINK_MENU = 1;
+    private int REQUEST_TAKE_PHOTO = 2;
     String drinkMenuResult;
 
     private ProgressDialog progressDialog;
@@ -293,6 +295,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
 
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item){
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_take_photo){
+            Intent intent = new Intent();
+            // setAction() 呼叫動作相關的方法
+            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
