@@ -19,10 +19,12 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,17 +108,37 @@ public class MainActivity extends AppCompatActivity {
         // 下query specify class(table name)
         ParseQuery<ParseObject> query = new ParseQuery<>("Order");
         //row = Parse object
-        List<ParseObject> rawData = null;
+
+        //List<ParseObject> rawData = null;
         //query.whereEqualTo()
+
+        // 藉由find in background 可以讓畫面先執行完成在顯示資料部分 不會整個畫面都是白的
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null){
+                    // 傳出query結果的obj
+                    // 負責做出listview
+                    orderObjectToListView(objects);
+
+                }
+            }
+        });
+        /*
         try{
             rawData = query.find();// find()會造成UI lag
             // find return value type is List, alike Array.
         }catch (ParseException e){
             e.printStackTrace();
         }
+        */
 
         //String[] rawData = Utils.readFile(this, "history.txt"). split("\n"); // 以換行隔開
 
+
+    }
+
+    private void orderObjectToListView(List<ParseObject> rawData) {
         // 列表型式資料list map是把三樣資料包起來的型式<key ,value>的型態
         //前面是interface, ArrayList是有實作list的class,這樣寫彈性較高
         List<Map<String,String>> data = new ArrayList<>();
@@ -190,7 +212,13 @@ public class MainActivity extends AppCompatActivity {
             orderObject.put("note", text);
             orderObject.put("store_info", (String)storeInfoSpinner.getSelectedItem());
             orderObject.put("menu", new JSONArray(drinkMenuResult));
-            orderObject.saveInBackground(); //在背景執行的 用save callback呼叫確認是否成功
+            orderObject.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Log.d("debug", "[line: 218] done");
+                }
+            }); //在背景執行的 用save callback呼叫確認是否成功
+            Log.d("debug", "line_221"); //這行可能比上一行早出現
 
             Toast.makeText(this,text, Toast.LENGTH_LONG).show();  // to make toast!(little hints)
 
