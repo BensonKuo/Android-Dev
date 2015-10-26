@@ -119,6 +119,21 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         photoImageView = (ImageView) findViewById(R.id.photo);
+
+
+
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String url = "https://maps.googleapis.com/maps/api/geocode/json?address=taipei101";
+//                byte[] res = Utils.urlToBytes(url);
+//                Lod.d("debug",new String(res));
+//            }
+//        });
+//
+//
+//        thread.start();
+
     }
 
     private void setHistory() {

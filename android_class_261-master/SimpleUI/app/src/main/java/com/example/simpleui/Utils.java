@@ -11,6 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by bensonkuo on 2015/10/12.
@@ -92,5 +95,32 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static byte[] urlToBytes(String urlString){
+        // 連線網路的方式有很多種 這裏是Java native
+        try{
+            URL url = new URL(urlString); // 看是不是有效合法的
+            URLConnection connection = url.openConnection();
+            InputStream is = connection.getInputStream();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];  //一定小於來源檔案
+            int len = 0;
+
+            // .read() will return 讀了幾個byte
+            // -1: 結束讀
+            while( (len = is.read(buffer)) != -1){
+                baos.write(buffer);
+            }
+
+            return baos.toByteArray();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }
