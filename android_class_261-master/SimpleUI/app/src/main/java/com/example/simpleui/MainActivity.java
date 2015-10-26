@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -107,6 +108,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         historyListView = (ListView) findViewById(R.id.historyListView);
+        historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                goToOrderDetail();
+            }
+        });
+
         storeInfoSpinner = (Spinner) findViewById(R.id.storeInfoSpinner);
 
         inputText.setText(sp.getString("inputText", ""));//程式重開後 在input顯示儲存的
@@ -312,6 +320,11 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("store_info", storeInfoString);// 傳送額外資訊
         startActivityForResult(intent, REQUEST_DRINK_MENU);
         //進行跳轉 ForResult()是因為等一下要跳回來 不然只需startActivity
+    }
+
+    private void goToOrderDetail(){
+        Intent intent = new Intent(this,OrderDetailActivity.class);
+        startActivity(intent);
     }
 
     @Override
