@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Boolean hasPhoto = false;
 
+    private List<ParseObject> queryResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
         super.onCreate(savedInstanceState); //呼叫繼承的oncreate()  super()的用法
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                goToOrderDetail();
+                goToOrderDetail(position);  // position 為第幾個item
             }
         });
 
@@ -158,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
+                    // 存起來給其他地方用
+                    queryResult = objects;
+
                     // 傳出query結果的obj
                     // 負責做出listview
                     orderObjectToListView(objects);
@@ -322,8 +327,12 @@ public class MainActivity extends AppCompatActivity {
         //進行跳轉 ForResult()是因為等一下要跳回來 不然只需startActivity
     }
 
-    private void goToOrderDetail(){
+    private void goToOrderDetail(int position){
+
+        ParseObject obj = queryResult.get(position);
+
         Intent intent = new Intent(this,OrderDetailActivity.class);
+        intent.putExtra("store_info",obj.getString("store_info"));
         startActivity(intent);
     }
 
