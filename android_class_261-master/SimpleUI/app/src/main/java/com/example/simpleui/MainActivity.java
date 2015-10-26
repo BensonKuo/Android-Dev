@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     String drinkMenuResult;
 
     private ProgressDialog progressDialog;
+    private Boolean hasPhoto = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {   // 改寫AppCompatActivity
@@ -250,6 +252,12 @@ public class MainActivity extends AppCompatActivity {
             if (drinkMenuResult != null) {
                 orderObject.put("menu", new JSONArray(drinkMenuResult));
             }
+
+            if (hasPhoto == true) {
+                Uri uri = Utils.getPhotoUri();
+                ParseFile parseFile = new ParseFile("photo.png", Utils.uriToBytes(this, uri));
+                orderObject.put("photo", parseFile);
+            }
             orderObject.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -263,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }); //在背景執行的 用save callback呼叫確認是否成功
 
-            Log.d("debug", "line_221"); //這行可能比上一行早出現
+            //Log.d("debug", "line_221"); //這行可能比上一行早出現
 
 
             Utils.writeFile(this, "history.txt", object + "\n"); // write file
@@ -303,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = Utils.getPhotoUri();
                 // 顯示縮圖
                 photoImageView.setImageURI(uri);
+                hasPhoto = true;
             }
         }
     }
