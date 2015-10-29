@@ -159,4 +159,10 @@ public class Utils {
         }
         return null;
     }
+
+
+    public static String getStaticMapUrl(String center, String zoom, String size) {
+        return String.format("https://maps.googleapis.com/maps/api/staticmap?center=%s&zoom=%s&size=%s", center, zoom, size);
+    }
+
 }
