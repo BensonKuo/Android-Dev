@@ -89,7 +89,7 @@ public class Utils {
             // .read() will return 讀了幾個byte
             // -1: 結束讀
             while( (len = is.read(buffer)) != -1){
-                baos.write(buffer);
+                baos.write(buffer,0,len);
             }
 
             return baos.toByteArray();
@@ -118,7 +118,7 @@ public class Utils {
             // .read() will return 讀了幾個byte
             // -1: 結束讀
             while( (len = is.read(buffer)) != -1){
-                baos.write(buffer);
+                baos.write(buffer,0,len);
             }
 
             return baos.toByteArray();
@@ -151,7 +151,7 @@ public class Utils {
             double lat = location.getDouble("lat");
             double lng = location.getDouble("lng");
 
-            return lat+", "+lng;
+            return lat+","+lng;
 
         } catch (JSONException e){
             e.printStackTrace();

@@ -76,8 +76,8 @@ public class OrderDetailActivity extends AppCompatActivity {
             addressTextView.setText(latLng);
 
             String staticMapUrl = Utils.getStaticMapUrl(latLng, "17", "300x600");
-            webView.loadUrl(staticMapUrl);
-
+            webView.loadUrl(staticMapUrl);// webview 呈現地圖
+//
             StaticMapTask task = new StaticMapTask();
             task.execute(latLng);
         }
@@ -87,8 +87,12 @@ public class OrderDetailActivity extends AppCompatActivity {
     private class StaticMapTask extends AsyncTask<String, Integer[], byte[]> {
         @Override
         protected byte[] doInBackground(String... params) {
-            String staticMapUrl = Utils.getStaticMapUrl(params[0], "17", "300x600");
-            return Utils.urlToBytes(staticMapUrl);
+            String staticMapUrl = Utils.getStaticMapUrl(params[0], "17", "500x800");
+            Log.d("debug",staticMapUrl);
+            byte[] r = Utils.urlToBytes(staticMapUrl);
+
+            Log.d("debug",String.valueOf(r.length));
+            return r;
         }
 
         @Override
