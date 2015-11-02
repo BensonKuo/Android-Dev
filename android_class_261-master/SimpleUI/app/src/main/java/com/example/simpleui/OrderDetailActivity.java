@@ -9,11 +9,14 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.security.PrivateKey;
 
@@ -25,6 +28,8 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     private SupportMapFragment mapFragment;  // support lib 新api用在old ver. android 因為新版本普及不高
     private GoogleMap googleMap;
+
+    private String storeInfo;
 
 
     @Override
@@ -40,7 +45,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         mapFragment =(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.googleMap);
         googleMap = mapFragment.getMap();
 
-        String storeInfo = getIntent().getStringExtra("store_info");
+        storeInfo = getIntent().getStringExtra("store_info");
         final String address = storeInfo.split(",")[1];
         Log.d("debug", address);
 
@@ -74,6 +79,21 @@ public class OrderDetailActivity extends AppCompatActivity {
         LatLng LatLng = new LatLng(Lat,Lng);
         // camera is current viewing area
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng, 15));
+
+        String name = storeInfo.split(",")[0];
+        String address = storeInfo.split(",")[1];
+
+        MarkerOptions options = new MarkerOptions().title(name).snippet(address).position(LatLng);
+        googleMap.addMarker(options);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Toast.makeText(OrderDetailActivity.this, marker.getTitle(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
     }
 
     //<doInBackground參數形式,onprogressupdate(),onPostExecute參數形式>
