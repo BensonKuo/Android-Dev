@@ -10,6 +10,11 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.security.PrivateKey;
 
 public class OrderDetailActivity extends AppCompatActivity {
@@ -17,6 +22,10 @@ public class OrderDetailActivity extends AppCompatActivity {
     private TextView addressTextView;
     private WebView webView;
     private ImageView imageView;
+
+    private SupportMapFragment mapFragment;  // support lib 新api用在old ver. android 因為新版本普及不高
+    private GoogleMap googleMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +36,9 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         webView = (WebView)findViewById(R.id.webView);
         imageView = (ImageView)findViewById(R.id.imageView);
+
+        mapFragment =(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.googleMap);
+        googleMap = mapFragment.getMap();
 
         String storeInfo = getIntent().getStringExtra("store_info");
         final String address = storeInfo.split(",")[1];
@@ -53,7 +65,15 @@ public class OrderDetailActivity extends AppCompatActivity {
 //
         GeoCodingTask task = new GeoCodingTask();
         task.execute(address);
+    }
 
+    private void setupGoogleMap(String LatLngStr){
+        Double Lat = Double.valueOf(LatLngStr.split(",")[0]);
+        Double Lng = Double.valueOf(LatLngStr.split(",")[1]);
+
+        LatLng LatLng = new LatLng(Lat,Lng);
+        // camera is current viewing area
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng, 15));
     }
 
     //<doInBackground參數形式,onprogressupdate(),onPostExecute參數形式>
@@ -74,6 +94,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String latLng) {
             addressTextView.setText(latLng);
+
+            setupGoogleMap(latLng);
 
             String staticMapUrl = Utils.getStaticMapUrl(latLng, "17", "300x600");
             webView.loadUrl(staticMapUrl);// webview 呈現地圖
