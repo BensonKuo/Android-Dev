@@ -6,4 +6,6 @@
     <string name="action_take_photo">Take Photo</string>
 
     <string name="title_activity_drink_menu_activy">DrinkMenuActivy</string>
+
+    <string name="facebook_app_id">1512147975764629</string>
 </resources>
