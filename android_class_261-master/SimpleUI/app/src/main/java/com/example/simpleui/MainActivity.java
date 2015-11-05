@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -124,6 +125,14 @@ public class MainActivity extends AppCompatActivity {
 
         setHistory();
         setStoreInfo();
+
+        // 寫法有bug
+        // 要拿的直接找token就好了  不要用extra
+        Intent fromFB = getIntent();
+        TextView topic = (TextView)findViewById(R.id.textView);
+        topic.setText(fromFB.getStringExtra("username"));
+
+
 
         //實體化
         progressDialog = new ProgressDialog(this);

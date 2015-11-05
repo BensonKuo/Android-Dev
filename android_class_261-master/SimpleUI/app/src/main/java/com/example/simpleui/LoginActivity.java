@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        // 應該放在main啦其實
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
             GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToMainActivity(String userName) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("username",userName);
+        intent.putExtra("username",userName); // demo方便而已
         startActivity(intent);
     }
 
@@ -85,5 +85,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        // 只是為了拿到參數而已
+        // callbackmanager會handle好一切(store token on device)
+        // 之後只需要getCurrentAccessToken()即可
     }
 }
